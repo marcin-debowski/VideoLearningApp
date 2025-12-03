@@ -18,10 +18,17 @@ import {
 } from "@expo-google-fonts/poppins";
 import { PoetsenOne_400Regular } from "@expo-google-fonts/poetsen-one";
 import { SigmarOne_400Regular } from "@expo-google-fonts/sigmar-one";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/navigation";
 import { colors } from "../constants/colors";
 import { styles } from "./LoginScreen.styles";
 
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
 export default function LoginScreen() {
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+  
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_400Regular_Italic,
@@ -33,8 +40,7 @@ export default function LoginScreen() {
   });
 
   const handleGuestLogin = () => {
-    // TODO: Navigate to home screen
-    console.log("Login as guest");
+    navigation.navigate('Home');
   };
 
   if (!fontsLoaded) {

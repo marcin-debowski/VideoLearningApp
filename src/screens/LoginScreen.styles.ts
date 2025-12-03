@@ -41,8 +41,6 @@ export const styles = StyleSheet.create({
     height: 140,
   },
   welcomeContainer: {
-    borderWidth: 2,
-    borderColor: colors.border.yellow,
     marginBottom: 24,
     alignSelf: "stretch",
     marginHorizontal: 33,

@@ -1,18 +1,19 @@
 export const colors = {
-  primary: "#3D4A5C",
-  background: "#8D9DB5",
+  primary: "#2B2D42",
+  background: "#8D99AE",
   white: "#FFFFFF",
   text: {
     dark: "#3D4A5C",
     light: "#FFFFFF",
-    muted: "#5D6D7E",
+    muted: "#2B2D4299",
   },
   button: {
-    primary: "#3D4A5C",
+    primary: "#2B2D42",
     text: "#FFFFFF",
   },
-  link: "#3D4A5C",
-  border: {
-    yellow: "#D4C462",
+  icon: {
+    dark: "#2B2D42",
+    light: "#FFFFFF",
   },
+  link: "#2B2D42",
 };
