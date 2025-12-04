@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,16 +10,13 @@ import {
   StatusBar,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
 import SortModal, { SortOption } from "../components/SortModal";
 import { colors } from "../constants/colors";
-
-export type TabParamList = {
-  HomeTab: undefined;
-  SearchTab: undefined;
-};
+import { TabParamList } from "../types/navigation";
+import { useSearch } from "../context/SearchContext";
+import { useHomeSort } from "../context/HomeSortContext";
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
@@ -53,10 +50,25 @@ function SearchIcon({ focused }: { focused: boolean }) {
 
 export default function HomeTabs() {
   const [sortModalVisible, setSortModalVisible] = useState(false);
-  const [sortOption, setSortOption] = useState<SortOption>("latest");
   const [activeTab, setActiveTab] = useState("HomeTab");
+  const { searchQuery, setSearchQuery, triggerSearch, searchTrigger } = useSearch();
+  const { sortOption, setSortOption } = useHomeSort();
+  const navigationRef = useRef<any>(null);
 
   const isHomeTab = activeTab === "HomeTab";
+
+  // Navigate to SearchTab when search is triggered
+  useEffect(() => {
+    if (searchTrigger > 0 && searchQuery.trim() && navigationRef.current) {
+      navigationRef.current.navigate("SearchTab");
+    }
+  }, [searchTrigger]);
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      triggerSearch();
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -74,7 +86,10 @@ export default function HomeTabs() {
               style={styles.searchInput}
               placeholder='Search videos'
               placeholderTextColor={colors.text.muted}
-              editable={false}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearchSubmit}
+              returnKeyType='search'
             />
           </View>
           {isHomeTab && (
@@ -93,6 +108,16 @@ export default function HomeTabs() {
       </SafeAreaView>
 
       <Tab.Navigator
+        screenListeners={({ navigation }) => ({
+          state: (e) => {
+            navigationRef.current = navigation;
+            const state = e.data.state;
+            if (state) {
+              const routeName = state.routes[state.index].name;
+              setActiveTab(routeName);
+            }
+          },
+        })}
         screenOptions={{
           headerShown: false,
           tabBarStyle: styles.tabBar,
@@ -100,15 +125,6 @@ export default function HomeTabs() {
           tabBarInactiveTintColor: colors.white,
           tabBarLabelStyle: styles.tabBarLabel,
           tabBarShowLabel: true,
-        }}
-        screenListeners={{
-          state: (e) => {
-            const state = e.data.state;
-            if (state) {
-              const routeName = state.routes[state.index].name;
-              setActiveTab(routeName);
-            }
-          },
         }}
       >
         <Tab.Screen
@@ -189,7 +205,7 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: colors.background,
     borderTopWidth: 0,
-    height: 70,
+    height: 72,
     paddingBottom: 10,
     paddingTop: 10,
   },
