@@ -1,5 +1,14 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StatusBar, ActivityIndicator, Image, StyleSheet, Linking } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StatusBar,
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Linking,
+} from "react-native";
 import {
   useFonts,
   Poppins_400Regular,
@@ -77,11 +86,11 @@ export default function LoginScreen() {
       <View style={styles.termsContainer}>
         <Text style={styles.termsText}>By continuing you agree with</Text>
         <View style={styles.linksContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL("https://github.com/marcin-debowski")}>
             <Text style={styles.linkText}>Terms and Conditions</Text>
           </TouchableOpacity>
           <Text style={styles.termsText}> and </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL("https://github.com/marcin-debowski")}>
             <Text style={styles.linkText}>Privacy Policy</Text>
           </TouchableOpacity>
         </View>
