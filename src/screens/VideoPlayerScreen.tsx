@@ -1,12 +1,6 @@
 import React, { useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from "react-native";
-import {
-  Video,
-  ResizeMode,
-  AVPlaybackStatus,
-  VideoFullscreenUpdate,
-  VideoFullscreenUpdateEvent,
-} from "expo-av";
+import Video, { OnProgressData, OnLoadData, VideoRef } from "react-native-video";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
@@ -34,11 +28,12 @@ const SAMPLE_VIDEO_URL = "https://bitmovin-a.akamaihd.net/content/sintel/hls/pla
 
 export default function VideoPlayerScreen({ navigation, route }: Props) {
   const { video } = route.params;
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef<VideoRef>(null);
   const [activeTab, setActiveTab] = useState<"Details" | "Notes">("Details");
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const formatTime = (millis: number) => {
     const totalSeconds = Math.floor(millis / 1000);
@@ -47,28 +42,25 @@ export default function VideoPlayerScreen({ navigation, route }: Props) {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-    if (status.isLoaded) {
-      setCurrentTime(status.positionMillis || 0);
-      setDuration(status.durationMillis || 0);
-      setIsPlaying(status.isPlaying);
-    }
+  const handleProgress = (data: OnProgressData) => {
+    setCurrentTime(data.currentTime * 1000); // convert to millis
   };
 
-  const handlePlayPause = async () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        await videoRef.current.pauseAsync();
-      } else {
-        await videoRef.current.playAsync();
-      }
-    }
+  const handleLoad = (data: OnLoadData) => {
+    setDuration(data.duration * 1000); // convert to millis
   };
 
-  const handleSeek = async (offsetMs: number) => {
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSeek = (offsetMs: number) => {
     if (videoRef.current) {
-      const newPosition = Math.max(0, Math.min(duration, currentTime + offsetMs));
-      await videoRef.current.setPositionAsync(newPosition);
+      const newPositionSeconds = Math.max(
+        0,
+        Math.min(duration / 1000, currentTime / 1000 + offsetMs / 1000)
+      );
+      videoRef.current.seek(newPositionSeconds);
     }
   };
 
@@ -76,23 +68,21 @@ export default function VideoPlayerScreen({ navigation, route }: Props) {
     try {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
       if (videoRef.current) {
-        await videoRef.current.presentFullscreenPlayer();
+        videoRef.current.presentFullscreenPlayer();
       }
+      setIsFullscreen(true);
     } catch (error) {
       console.log("Fullscreen error:", error);
     }
   };
 
-  const handleFullscreenUpdate = async (event: VideoFullscreenUpdateEvent) => {
-    // PLAYER_DID_DISMISS = user exited fullscreen
-    if (event.fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
-      try {
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-        // Następnie odblokuj, żeby pozwolić na normalną rotację
-        await ScreenOrientation.unlockAsync();
-      } catch (error) {
-        console.log("Orientation reset error:", error);
-      }
+  const handleFullscreenPlayerDidDismiss = async () => {
+    try {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+      await ScreenOrientation.unlockAsync();
+      setIsFullscreen(false);
+    } catch (error) {
+      console.log("Orientation reset error:", error);
     }
   };
 
@@ -106,11 +96,12 @@ export default function VideoPlayerScreen({ navigation, route }: Props) {
           ref={videoRef}
           source={{ uri: SAMPLE_VIDEO_URL }}
           style={styles.video}
-          resizeMode={ResizeMode.CONTAIN}
-          shouldPlay={true}
-          isLooping={true}
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          onFullscreenUpdate={handleFullscreenUpdate}
+          resizeMode='contain'
+          paused={!isPlaying}
+          repeat={true}
+          onProgress={handleProgress}
+          onLoad={handleLoad}
+          onFullscreenPlayerDidDismiss={handleFullscreenPlayerDidDismiss}
         />
 
         {/* Video Controls Overlay */}

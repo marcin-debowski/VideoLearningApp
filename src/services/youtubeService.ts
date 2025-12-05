@@ -30,6 +30,7 @@ export const searchVideos = async (
   maxResults: number = 10
 ): Promise<YouTubeVideo[]> => {
   try {
+    console.log("API_KEY:", API_KEY ? "exists" : "missing");
     const response = await axios.get<YouTubeSearchResponse>(`${BASE_URL}/search`, {
       params: {
         part: "snippet",
@@ -40,8 +41,12 @@ export const searchVideos = async (
       },
     });
     return mapResponseToVideos(response.data);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error searching videos:", error);
+    if (error.response) {
+      console.error("Response status:", error.response.status);
+      console.error("Response data:", JSON.stringify(error.response.data));
+    }
     throw error;
   }
 };
