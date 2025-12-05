@@ -4,11 +4,11 @@
     "slug": "VideoLearningApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/yticon.png",
+    "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/yticon.png",
+      "image": "./assets/app-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/yticon.png",
+        "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/yticon.png"
+      "favicon": "./assets/app-icon.png"
     },
     "plugins": ["expo-font"]
   }

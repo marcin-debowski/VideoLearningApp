@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     color: colors.text.dark,
   },
   showMore: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: "Poppins_400Regular",
     color: colors.primary,
     textDecorationLine: "underline",

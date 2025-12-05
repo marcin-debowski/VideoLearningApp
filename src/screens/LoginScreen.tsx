@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  ActivityIndicator,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, StatusBar, ActivityIndicator, Image, StyleSheet, Linking } from "react-native";
 import {
   useFonts,
   Poppins_400Regular,
@@ -22,13 +14,12 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
 import { colors } from "../constants/colors";
-import { styles } from "./LoginScreen.styles";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 export default function LoginScreen() {
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_400Regular_Italic,
@@ -40,7 +31,7 @@ export default function LoginScreen() {
   });
 
   const handleGuestLogin = () => {
-    navigation.navigate('Home');
+    navigation.navigate("Home");
   };
 
   if (!fontsLoaded) {
@@ -52,7 +43,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle='dark-content' backgroundColor={colors.background} />
 
       {/* Logo Section */}
@@ -64,7 +55,7 @@ export default function LoginScreen() {
       {/* Icon */}
       <View style={styles.iconContainer}>
         <Image
-          source={require("../../assets/yticon.png")}
+          source={require("../../assets/app-icon.png")}
           style={styles.ytIcon}
           resizeMode='contain'
         />
@@ -95,6 +86,91 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    alignItems: "center",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+  },
+  logoSection: {
+    marginTop: 80,
+    marginRight: 52,
+    marginLeft: 49,
+  },
+  logoText: {
+    fontSize: 64,
+    fontFamily: "PoetsenOne_400Regular",
+    color: "#FFFEF5",
+    letterSpacing: 0,
+    textAlign: "left",
+  },
+  learnText: {
+    fontSize: 32,
+    fontFamily: "SigmarOne_400Regular",
+    letterSpacing: 0,
+    color: colors.text.dark,
+    marginTop: -8,
+    textAlign: "right",
+  },
+  iconContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  ytIcon: {
+    width: 140,
+    height: 140,
+  },
+  welcomeContainer: {
+    marginBottom: 24,
+    alignSelf: "stretch",
+    marginHorizontal: 33,
+  },
+  welcomeText: {
+    fontSize: 22,
+    color: colors.text.light,
+    textAlign: "left",
+    lineHeight: 28,
+    fontFamily: "Poppins_600SemiBold",
+  },
+  loginButton: {
+    backgroundColor: colors.button.primary,
+    paddingVertical: 12,
+    alignSelf: "stretch",
+    borderRadius: 12,
+    marginBottom: 24,
+    alignItems: "center",
+    marginHorizontal: 33,
+  },
+  loginButtonText: {
+    color: colors.button.text,
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
+  },
+  termsContainer: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  termsText: {
+    fontSize: 13,
+    color: colors.text.light,
+    fontFamily: "Poppins_400Regular",
+  },
+  linksContainer: {
+    flexDirection: "row",
+    marginTop: 2,
+  },
+  linkText: {
+    fontSize: 13,
+    color: colors.link,
+    textDecorationLine: "underline",
+    fontFamily: "Poppins_400Regular",
+  },
+});

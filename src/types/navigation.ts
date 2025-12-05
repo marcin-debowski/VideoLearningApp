@@ -1,8 +1,9 @@
-import { CategoryType } from "./youtube";
+import { CategoryType, YouTubeVideo } from "./youtube";
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
+  VideoPlayer: { video: YouTubeVideo };
 };
 
 export type TabParamList = {

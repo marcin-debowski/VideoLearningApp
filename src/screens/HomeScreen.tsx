@@ -2,14 +2,19 @@ import React, { useEffect, useState, useMemo } from "react";
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { CompositeNavigationProp } from "@react-navigation/native";
 import { colors } from "../constants/colors";
 import { YouTubeVideo, CategoryType } from "../types/youtube";
-import { TabParamList } from "../types/navigation";
+import { TabParamList, RootStackParamList } from "../types/navigation";
 import { getVideosByCategory } from "../services/youtubeService";
 import CategorySection from "../components/CategorySection";
 import { useHomeSort } from "../context/HomeSortContext";
 
-type HomeScreenNavigationProp = BottomTabNavigationProp<TabParamList, "HomeTab">;
+type HomeScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<TabParamList, "HomeTab">,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 
 const CATEGORIES: CategoryType[] = ["React Native", "React", "TypeScript", "JavaScript"];
 
@@ -55,8 +60,7 @@ export default function HomeScreen() {
   };
 
   const handleVideoPress = (video: YouTubeVideo) => {
-    // TODO: Navigate to video player
-    console.log("Video pressed:", video.title);
+    navigation.navigate("VideoPlayer", { video });
   };
 
   // Parse date string (DD.MM.YYYY) to Date object for sorting

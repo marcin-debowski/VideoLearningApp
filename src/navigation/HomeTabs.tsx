@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
@@ -18,34 +17,19 @@ import { TabParamList } from "../types/navigation";
 import { useSearch } from "../context/SearchContext";
 import { useHomeSort } from "../context/HomeSortContext";
 
+// Import SVG icons
+import HomeIconSvg from "../../assets/home-icon.svg";
+import SearchIconSvg from "../../assets/search-icon.svg";
+import SettingsIconSvg from "../../assets/settings-icon.svg";
+
 const Tab = createBottomTabNavigator<TabParamList>();
 
 function HomeIcon({ focused }: { focused: boolean }) {
-  return (
-    <Image
-      source={
-        focused
-          ? require("../../assets/home-icon-dark.png")
-          : require("../../assets/home-icon-light.png")
-      }
-      style={styles.tabIcon}
-      resizeMode='contain'
-    />
-  );
+  return <HomeIconSvg width={32} height={32} color={focused ? colors.white : colors.text.dark} />;
 }
 
 function SearchIcon({ focused }: { focused: boolean }) {
-  return (
-    <Image
-      source={
-        focused
-          ? require("../../assets/search-icon-dark.png")
-          : require("../../assets/search-icon-light.png")
-      }
-      style={styles.tabIcon}
-      resizeMode='contain'
-    />
-  );
+  return <SearchIconSvg width={32} height={32} color={focused ? colors.white : colors.text.dark} />;
 }
 
 export default function HomeTabs() {
@@ -77,11 +61,7 @@ export default function HomeTabs() {
         {/* Top Search Bar */}
         <View style={styles.topBar}>
           <View style={styles.searchContainer}>
-            <Image
-              source={require("../../assets/search-icon-dark.png")}
-              style={styles.searchIcon}
-              resizeMode='contain'
-            />
+            <SearchIconSvg width={20} height={20} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
               placeholder='Search videos'
@@ -97,11 +77,7 @@ export default function HomeTabs() {
               style={styles.settingsButton}
               onPress={() => setSortModalVisible(true)}
             >
-              <Image
-                source={require("../../assets/settings-icon.png")}
-                style={styles.settingsIcon}
-                resizeMode='contain'
-              />
+              <SettingsIconSvg width={24} height={24} />
             </TouchableOpacity>
           )}
         </View>
@@ -121,8 +97,8 @@ export default function HomeTabs() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: colors.text.dark,
-          tabBarInactiveTintColor: colors.white,
+          tabBarActiveTintColor: colors.white,
+          tabBarInactiveTintColor: colors.text.dark,
           tabBarLabelStyle: styles.tabBarLabel,
           tabBarShowLabel: true,
         }}

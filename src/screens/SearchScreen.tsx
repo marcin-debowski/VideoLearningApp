@@ -7,10 +7,13 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { CompositeNavigationProp } from "@react-navigation/native";
 import { colors } from "../constants/colors";
 import { YouTubeVideo } from "../types/youtube";
-import { TabParamList } from "../types/navigation";
+import { TabParamList, RootStackParamList } from "../types/navigation";
 import { searchVideos, getVideosByCategory } from "../services/youtubeService";
 import SearchVideoCard from "../components/SearchVideoCard";
 import { useSearch } from "../context/SearchContext";
@@ -18,8 +21,14 @@ import SortModal, { SortOption } from "../components/SortModal";
 
 type SearchScreenRouteProp = RouteProp<TabParamList, "SearchTab">;
 
+type SearchScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<TabParamList, "SearchTab">,
+  NativeStackNavigationProp<RootStackParamList>
+>;
+
 export default function SearchScreen() {
   const route = useRoute<SearchScreenRouteProp>();
+  const navigation = useNavigation<SearchScreenNavigationProp>();
   const { category } = route.params || {};
   const { searchQuery, searchTrigger } = useSearch();
 
@@ -79,8 +88,7 @@ export default function SearchScreen() {
   };
 
   const handleVideoPress = (video: YouTubeVideo) => {
-    // TODO: Navigate to video player
-    console.log("Video pressed:", video.title);
+    navigation.navigate("VideoPlayer", { video });
   };
 
   // Parse date string (DD.MM.YYYY) to Date object for sorting
@@ -201,7 +209,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   resultsCount: {
-    fontSize: 14,
+    fontSize: 10,
     fontFamily: "Poppins_400Regular",
     color: colors.text.muted,
     marginBottom: 8,
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   sortBy: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: "Poppins_400Regular",
     color: colors.text.dark,
     textAlign: "right",
